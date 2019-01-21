@@ -1,6 +1,6 @@
 
 
-export default class LintTask{
+export class LintTask{
 
     public x: number;
 

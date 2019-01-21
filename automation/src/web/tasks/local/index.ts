@@ -1,6 +1,6 @@
 
 
-export default class LocalTask{
+export class LocalTask{
 
     public x: number;
 

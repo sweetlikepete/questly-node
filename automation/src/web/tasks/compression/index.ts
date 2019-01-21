@@ -1,6 +1,6 @@
 
 
-export default class CompressionTask{
+export class CompressionTask{
 
     public x: number;
 

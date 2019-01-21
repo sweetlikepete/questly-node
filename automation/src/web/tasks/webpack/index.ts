@@ -1,6 +1,6 @@
 
 
-export default class WebpackTask{
+export class WebpackTask{
 
     public x: number;
 

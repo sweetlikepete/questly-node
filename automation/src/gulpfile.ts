@@ -9,8 +9,6 @@ const automation = new Automation({
     project: "sweetlikepete777"
 });
 
-gulp.task("lint", () => {
-
-    console.log(automation);
-
-});
+gulp.task("lint", gulp.series(
+    automation.web.clean.run()
+));

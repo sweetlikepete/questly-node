@@ -1,6 +1,6 @@
 
 
-export default class DeployTask{
+export class DeployTask{
 
     public x: number;
 

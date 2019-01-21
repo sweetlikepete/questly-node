@@ -6,29 +6,34 @@ import watch from "gulp-watch";
 import through from "through2";
 
 
-interface ITaskConfig {
+interface IConfig {
     name?: string;
     globs?: string | Array<string>;
 }
 
+export interface IRunnerArgs{
+    globs?: string | Array<string>;
+    watching?: boolean;
+}
 
-export default class Task{
+
+export abstract class Task{
 
     public dest: typeof gulp.dest;
     public globs?: string | Array<string>;
     public name?: string;
 
-    constructor(taskConfig: ITaskConfig = {}){
+    constructor(config: IConfig = {}){
 
         this.dest = gulp.dest;
-        this.globs = taskConfig.globs;
-        this.name = taskConfig.name;
+        this.globs = config.globs;
+        this.name = config.name;
 
     }
 
     public fail(message?: string){
 
-        if(Boolean(message)){
+        if(message){
             log(message);
         }
 
@@ -39,7 +44,7 @@ export default class Task{
 
     public run(){
 
-        const fn = () => this.runner();
+        const fn = () => this.runner({});
 
         Object.defineProperty(fn, "name", {
             value: `${ this.name }`,
@@ -50,9 +55,13 @@ export default class Task{
 
     }
 
-    public runner(globs?: string | Array<string>, watching = false){
+    public async runner(runnerArgs: IRunnerArgs): Promise<void>{
 
-        return this.src(globs || this.globs || __filename);
+        return new Promise(resolve => {
+
+            resolve();
+
+        });
 
     }
 
@@ -84,9 +93,15 @@ export default class Task{
 
     }
 
-    public src(globs: string | Array<string>, options = { base: "./" }){
+    public async src(globs: string | Array<string>, options = { base: "./" }){
 
-        return gulp.src(globs, options);
+        await new Promise<void>(resolve => {
+
+            gulp.src(globs, options);
+
+            resolve();
+
+        });
 
     }
 
@@ -115,9 +130,12 @@ export default class Task{
                 "unlinkDir"
             ]
         })
-        .on("change", (globs: string | Array<string>) => {
+        .on("change", async (globs: string | Array<string>) => {
 
-            this.runner(globs, true);
+            await this.runner({
+                globs,
+                watching: true
+            });
 
         });
 
