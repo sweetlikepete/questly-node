@@ -10,5 +10,5 @@ const automation = new Automation({
 });
 
 gulp.task("lint", gulp.series(
-    automation.web.clean.run()
+    automation.base.lint.run()
 ));

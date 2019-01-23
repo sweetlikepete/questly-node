@@ -1,7 +1,7 @@
 
 
-import log from "fancy-log";
 import gulp from "gulp";
+import log from "fancy-log";
 import watch from "gulp-watch";
 import through from "through2";
 
@@ -51,23 +51,17 @@ export abstract class Task{
             writable: false
         });
 
-        return fn;
+        return gulp.series(fn);
 
     }
 
-    public async runner(runnerArgs: IRunnerArgs): Promise<void>{
+    public runner(runnerArgs: IRunnerArgs): NodeJS.ReadWriteStream | Promise<void>{
 
-        return new Promise(resolve => {
-
-            resolve();
-
-        });
+        return this.src();
 
     }
 
-    // The callback uses the chunk from through2 which has a type of any
-    // tslint:disable-next-line: no-any
-    public skip(func: (chunk: any) => void){
+    public skip(): NodeJS.ReadWriteStream{
 
         return through({ objectMode: true }, function blank(chunk, encoding, cb){
 
@@ -78,8 +72,6 @@ export abstract class Task{
                 cb();
 
             }else{
-
-                func(chunk);
 
                 // Through2 requires this.push to be called in this way
                 // tslint:disable-next-line: no-invalid-this
@@ -93,15 +85,9 @@ export abstract class Task{
 
     }
 
-    public async src(globs: string | Array<string>, options = { base: "./" }){
+    public src(globs?: string | Array<string>, options = { base: "./" }){
 
-        await new Promise<void>(resolve => {
-
-            gulp.src(globs, options);
-
-            resolve();
-
-        });
+        return gulp.src(globs || __filename, options);
 
     }
 
@@ -114,7 +100,7 @@ export abstract class Task{
             writable: false
         });
 
-        return fn;
+        return gulp.series(fn);
 
     }
 
